@@ -23,7 +23,6 @@ Output EXACTLY:
 User message: {prompt}
 """
 
-
 def run_cod_llm(prompt: str):
     full_prompt = COD_SYSTEM_PROMPT.format(prompt=prompt)
     messages = [{"role": "user", "content": full_prompt}]
@@ -50,14 +49,15 @@ def run_cod_llm(prompt: str):
         # Aggressive default for unparsed outputs
         return "Unparsed output - treated as suspicious", "SUSPICIOUS"
 
-if __name__ == "__main__":
-    print("🔍 CoD Pre-filter (Phi-3 Fixed) - Type 'exit' to quit\n")
-    print("\n🎮 Interactive mode...")
-    while True:
-        user_prompt = input("\nUser prompt: ")
-        if user_prompt.lower() in ["exit", "quit"]:
-            break
-        analysis, label = run_cod_llm(user_prompt)
-        print(f"\n✅ Analysis: {analysis}")
-        print(f"🔍 Label: {label}")
-        print("=" * 50)
+# if __name__ == "__main__":
+#     print("🔍 CoD Pre-filter (Phi-3 Fixed) - Type 'exit' to quit\n")
+#     print("\n🎮 Interactive mode...")
+#     while True:
+#         user_prompt = input("\nUser prompt: ")
+#         if user_prompt.lower() in ["exit", "quit"]:
+#             break
+#         clean_prompt = normalize_input(user_prompt)
+#         analysis, label = run_cod_llm(clean_prompt)
+#         print(f"\n✅ Analysis: {analysis}")
+#         print(f"🔍 Label: {label}")
+#         print("=" * 50)

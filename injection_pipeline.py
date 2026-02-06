@@ -1,4 +1,5 @@
 from cod_prefilter import run_cod_llm
+from normalization import normalize_input
 import joblib
 import numpy as np
 
@@ -14,7 +15,8 @@ class InjectionPipeline:
         
         # STEP 1: CoD (1-2 sec)
         print("1️⃣  CoD Pre-filter running...")
-        draft_analysis, draft_label = run_cod_llm(prompt)
+        clean_prompt = normalize_input(prompt)
+        draft_analysis, draft_label = run_cod_llm(clean_prompt)
         print(f"   CoD: {draft_label} | {draft_analysis[:60]}...")
         
         if draft_label == "SUSPICIOUS":

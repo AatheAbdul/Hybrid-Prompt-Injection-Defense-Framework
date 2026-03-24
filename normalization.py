@@ -20,13 +20,24 @@ def normalize_language(text: str) -> str:
     return text
 
 def try_base64_decode(text: str) -> str:
-    try:
-        decoded = base64.b64decode(text).decode("utf-8")
-        if len(decoded) > 0:
-            return decoded
-    except Exception:
-        pass
-    return text
+    # Pattern to find potential Base64 strings: 8+ chars of A-Za-z0-9+/=
+    b64_pattern = re.compile(r'[A-Za-z0-9+/=]{8,}')
+    
+    def decode_repl(match):
+        candidate = match.group(0)
+        try:
+            # Basic validation: length should be multiple of 4
+            if len(candidate) % 4 != 0:
+                return candidate
+            decoded = base64.b64decode(candidate).decode("utf-8")
+            # If it's alphanumeric/readable, replace it
+            if any(c.isprintable() for c in decoded):
+                return f"[DECODED: {decoded}]"
+        except Exception:
+            pass
+        return candidate
+
+    return b64_pattern.sub(decode_repl, text)
 
 def decode_url(text: str) -> str:
     return urllib.parse.unquote(text)
@@ -38,7 +49,9 @@ def normalize_encoding(text: str) -> str:
 
 def normalize_input(text: str) -> str:
     text = normalize_unicode(text)
-    text = normalize_language(text)
+    # 1. Decode FIRST (uncover hidden payload)
     text = normalize_encoding(text)
+    # 2. Translate SECOND (translate both outer text and decoded payload)
+    text = normalize_language(text)
     return text
 

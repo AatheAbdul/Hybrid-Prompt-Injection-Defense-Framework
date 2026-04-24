@@ -202,8 +202,12 @@ if st.button("🚀 Analyze & Send to AI", use_container_width=True):
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown("#### 📝 Normalized Input Log")
-        st.info(f"**Cleaned Payload:**\n\n{final_normalized_text}")
+        if decision == "🚫 BLOCKED":
+            st.markdown("#### 🚨 Detected Attack Payload")
+            st.warning(f"The following malicious content was found in the input:\n\n**{final_normalized_text}**")
+        else:
+            st.markdown("#### 📝 Cleaned Payload")
+            st.info(f"**Extracted Text:**\n\n{final_normalized_text}")
 
     # 4. Handle LLM Execution
     with col2:
